@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useAnimation } from "motion/react";
 
 export interface UISwitchProps extends React.ComponentPropsWithoutRef<typeof Switch.Root> {
     /** Optional size variant */
-    size?: "sm" | "md" | "lg";
+    size?: "sm" | "md" | "lg"; 
     /** Show a label inside the thumb when checked */
     thumbLabel?: React.ReactNode;
 }
