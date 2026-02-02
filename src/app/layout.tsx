@@ -15,8 +15,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://aniruddha.dev"),
   title: "Portfolio | Anirudha Gandhare",
   description: "Portfolio website of Anirudha Gandhare",
+  icons: {
+    icon: '/logo.svg'
+  },
+  openGraph: {
+    title: "Portfolio | Anirudha Gandhare",
+    description: "Portfolio website of Anirudha Gandhare",
+    url: "https://aniruddha.dev/og.jpg",
+    siteName: "Portfolio of Anirudha Gandhare",
+    images: [
+      {
+        type: 'image/jpeg',
+        url: "https://aniruddha.dev/og.jpg",
+        width: 1200,
+        height: 630,
+      },
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Portfolio | Anirudha Gandhare",
+    description: "Portfolio website of Anirudha Gandhare",
+    images: ["https://aniruddha.dev/og.jpg"],
+    site: "@anirudhag1999",
+    creator: "@anirudhag1999",
+  },
 };
 
 export default function RootLayout({
