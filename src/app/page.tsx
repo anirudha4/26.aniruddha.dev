@@ -12,7 +12,7 @@ const Home = ({ }: Props) => {
   const { showBorders } = useBorderSettings();
   return (
     <div className={cn(
-      "min-h-screen max-w-xl relative mx-auto border-x border-x-transparent",
+      "min-h-screen max-w-xl relative pb-10 mx-auto border-x border-x-transparent",
       showBorders && "border-x-border"
     )}>
       <Header />
