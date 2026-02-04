@@ -9,13 +9,22 @@ import { useBorderSettings } from "@/contexts/border-settings-context";
 
 const EXPERIENCE = [
     {
-        title: "Chisellabs - B2B SaaS AI Product",
-        description: "AI Product Management Agent for PMs to double their speed and capacity.",
+        title: "Pendo - Product Analytics Platform",
+        description: "A product-analytics platform that helps software companies understand user behavior, improve user experience, and drive product adoption through in-app guidance and feedback collection.",
+        logo: '/experience/pendo/logo.png',
+        link: 'https://pendo.io',
+        role: 'Senior Software Engineer',
+        from: 'Feb 2026',
+        to: 'Present'
+    },
+    {
+        title: "Chisellabs (Acquired by Pendo)",
+        description: "An AI-powered, unified product management platform designed to help product managers and teams create roadmaps, collect customer feedback, and align internal teams in one place.",
         logo: '/experience/chisel/logo.svg',
         link: 'https://chisellabs.com',
         role: 'Founding Engineer',
         from: 'Jan 2022',
-        to: 'Present'
+        to: 'Feb 2026'
     },
     {
         title: "Wednesday Solution",

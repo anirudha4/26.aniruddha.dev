@@ -40,7 +40,7 @@ const Hero = ({ }: Props) => {
             transition={{ duration: 0.5, delay: 0.15 }}
         >
             <p className="text-sm tracking-tight font-mono text-accent-foreground/80">
-                I build things that work and observe things that matter. An engineer obsessed with the "why" and "how" of great products. From B2B SaaS foundations of AI, I'm always shipping, learning, or deconstructing good design.
+                I build things that scale and observe things that matter. An engineer obsessed with the "why" and "how" of great products. From B2B SaaS foundations of AI, I'm always shipping, learning, or deconstructing good design.
             </p>
 
             <div className="mt-10 relative flex gap-2 border bg-muted rounded-2xl p-0.5">
@@ -51,7 +51,6 @@ const Hero = ({ }: Props) => {
                         href={link.href}
                         target="_blank"
                         onMouseEnter={() => setHoveredIndex(index)}
-                    // onMouseLeave={() => setHoveredIndex(null)}
                     >
                         <motion.button
                             className={cn(

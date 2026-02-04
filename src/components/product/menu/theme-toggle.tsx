@@ -1,50 +1,97 @@
 import { motion } from 'motion/react';
-import { Bulb, ComputerIcon, Moon } from '@hugeicons/core-free-icons';
+import { ComputerIcon, Moon02Icon, Sun03Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
+import { BorderToggle } from '@/components/ui/border-toggle';
+
+const THEMES = [
+    { id: 'light', label: 'Light', icon: Sun03Icon },
+    { id: 'dark', label: 'Dark', icon: Moon02Icon },
+    { id: 'system', label: 'System', icon: ComputerIcon },
+] as const;
+
+const itemVariants = {
+    initial: { opacity: 0, y: 8 },
+    animate: { opacity: 1, y: 0 },
+};
+
 export const ThemeToggle = () => {
     return (
-        <div className="flex items-center h-10 rounded-full w-full bg-muted p-0.5">
-            <ThemeOption icon={Bulb} title="Light" />
-            <ThemeOption icon={Moon} title="Dark" />
-            <ThemeOption icon={ComputerIcon} title="System" />
-        </div>
-    )
-}
+        <motion.div
+            className="flex flex-col gap-2"
+            initial="initial"
+            animate="animate"
+            transition={{ staggerChildren: 0.05 }}
+            layout
+        >
+            <motion.p
+                variants={itemVariants}
+                className="text-sm text-muted-foreground font-mono px-1 mb-1"
+            >
+                Choose your preference
+            </motion.p>
+
+            <motion.div
+                variants={itemVariants}
+                className="flex items-stretch h-16 rounded-2xl w-full bg-muted border p-1 gap-1"
+            >
+                {THEMES.map((theme) => (
+                    <ThemeOption
+                        key={theme.id}
+                        id={theme.id}
+                        icon={theme.icon}
+                        label={theme.label}
+                    />
+                ))}
+            </motion.div>
+            <div className="mt-2">
+                <BorderToggle />
+            </div>
+        </motion.div>
+    );
+};
 
 interface ThemeOptionProps {
-    title: string;
-    icon: any;
+    id: string;
+    label: string;
+    icon: typeof Sun03Icon;
 }
-export const ThemeOption = ({
-    title,
-    icon,
-}: ThemeOptionProps) => {
+
+const ThemeOption = ({ id, label, icon }: ThemeOptionProps) => {
     const { theme, setTheme } = useTheme();
-    const isActive = theme === title.toLowerCase();
-    const handleClick = () => {
-        setTheme(title.toLowerCase());
-    }
+    const isActive = theme === id;
+
     return (
         <motion.button
-            onClick={handleClick}
+            onClick={() => setTheme(id)}
             className={cn(
-                'flex items-center cursor-pointer relative justify-center gap-2 px-3 h-full flex-1',
+                'flex flex-col items-center cursor-pointer relative justify-center gap-1 h-full flex-1 rounded-[10px]',
+                'transition-colors',
             )}
-            
+            whileTap={{ scale: 0.97 }}
         >
-            <HugeiconsIcon icon={icon} size={18} className='relative z-50' />
-            <span className='text-sm font-medium font-mono relative z-50'>
-                {title}
-            </span>
             {isActive && (
                 <motion.div
-                    className="absolute border inset-0 left-0 top-0 bg-background rounded-full z-1"
+                    className="absolute inset-0 bg-background rounded-[9px]"
                     layoutId="theme-toggle-active-bg"
-                    transition={{ type: 'spring', duration: .4, stiffness: 400, damping: 40 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 35 }}
                 />
             )}
+            <HugeiconsIcon
+                icon={icon}
+                size={18}
+                className={cn(
+                    'relative z-10 transition-colors',
+                    isActive ? 'text-primary' : 'text-muted-foreground'
+                )}
+            />
+            <span className={cn(
+                'text-xs font-medium font-mono relative z-10 transition-colors',
+                isActive ? 'text-foreground' : 'text-muted-foreground'
+            )}>
+                {label}
+            </span>
         </motion.button>
-    )
-}
+    );
+};

@@ -1,7 +1,5 @@
 'use client';
-
 import { motion } from "motion/react";
-import { BorderToggle } from "../ui/border-toggle";
 
 type Props = {}
 const Footer = ({ }: Props) => {
@@ -20,7 +18,6 @@ const Footer = ({ }: Props) => {
                     © {new Date().getFullYear()} Portfolio. All rights reserved.
                 </p>
             </div>
-            <BorderToggle />
         </motion.div>
     )
 }
