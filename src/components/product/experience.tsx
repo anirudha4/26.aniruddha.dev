@@ -13,9 +13,10 @@ const EXPERIENCE = [
         description: "A product-analytics platform that helps software companies understand user behavior, improve user experience, and drive product adoption through in-app guidance and feedback collection.",
         logo: '/experience/pendo/logo.png',
         link: 'https://pendo.io',
-        role: 'Senior Software Engineer',
+        role: 'Sr. Software Engineer',
         from: 'Feb 2026',
-        to: 'Present'
+        to: 'Present',
+        active: true
     },
     {
         title: "Chisellabs (Acquired by Pendo)",
@@ -78,6 +79,7 @@ const Experience = ({ }: Props) => {
                         role={item.role}
                         from={item.from}
                         to={item.to}
+                        active={item.active}
                     />
                 ))}
             </div>
@@ -95,6 +97,7 @@ interface ExperienceItemProps {
     role?: string;
     from?: string;
     to?: string;
+    active?: boolean;
 }
 export const ExperienceItem = ({
     description,
@@ -104,7 +107,8 @@ export const ExperienceItem = ({
     isLast,
     role,
     from,
-    to
+    to,
+    active = false
 }: ExperienceItemProps) => {
     const { showBorders } = useBorderSettings();
 
@@ -114,7 +118,8 @@ export const ExperienceItem = ({
             target="_blank"
             className={cn(
                 "flex flex-col gap-2 group py-4 px-4 border-b",
-                !isLast && showBorders ? "border-b" : "border-transparent"
+                !isLast && showBorders ? "border-b" : "border-transparent",
+                active ? 'bg-muted/20' : ''
             )}
             initial={{ opacity: 0, filter: 'blur(4px)' }}
             animate={{ opacity: 1, filter: 'blur(0px)' }}
@@ -133,8 +138,13 @@ export const ExperienceItem = ({
                         <HugeiconsIcon icon={Calendar03FreeIcons} size={16} />
                         <span className="truncate">{from} to {to}</span>
                     </div>
-                    <div className="flex font-mono text-xs text-muted-foreground group-hover:text-accent-foreground items-center gap-2">
-                        <HugeiconsIcon className="min-w-2.5 min-h-2.5" icon={AccountSetting03Icon} size={16} />
+                    <div className={cn(
+                        "flex font-mono text-xs text-muted-foreground group-hover:text-accent-foreground items-center gap-2",
+                        active ? 'text-emerald-500 group-hover:text-emerald-400' : ''
+                    )}>
+                        <HugeiconsIcon className={cn(
+                            "min-w-2.5 min-h-2.5",
+                        )} icon={AccountSetting03Icon} size={16} />
                         <span className="truncate">{role}</span>
                     </div>
                 </div>

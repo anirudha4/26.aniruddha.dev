@@ -12,13 +12,16 @@ import {
     ArrowRight02Icon,
     AiChat02Icon,
     TelegramFreeIcons,
+    ArrowRight02FreeIcons,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { Drawer } from 'vaul';
 import { ThemeToggle } from './theme-toggle';
 import { cn } from '@/lib/utils';
 import { useChat } from '@ai-sdk/react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 type MenuStep = {
     id: string;
@@ -489,6 +492,15 @@ function ContactStep() {
 function ChatStep() {
     const [input, setInput] = useState('');
     const { messages, sendMessage, status } = useChat();
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -508,37 +520,39 @@ function ChatStep() {
         >
             <motion.div
                 variants={itemVariants}
-                className="flex flex-col gap-2 max-h-60 overflow-y-auto p-3 rounded-2xl bg-muted/50 border border-border/50"
+                className="flex flex-col gap-2 max-h-60 overflow-y-auto rounded-2xl p-3 border border-border/50"
             >
                 {messages.length === 0 ? (
                     <p className="text-sm text-muted-foreground font-mono text-center py-4">
-                        Ask me anything about Anirudha!
+                        Ask me anything about Anirudha.
                     </p>
                 ) : (
-                    messages.map((message) => (
-                        <div
-                            key={message.id}
-                            className={cn(
-                                'p-2.5 rounded-xl text-xs font-mono',
-                                message.role === 'user'
-                                    ? 'bg-primary text-primary-foreground ml-auto max-w-[80%]'
-                                    : 'bg-accent text-foreground mr-auto max-w-[80%]'
-                            )}
-                        >
-                            {message.parts.map((part, index) => (
-                                <span key={index}>
-                                    {part.type === 'text' ? part.text : null}
-                                </span>
-                            ))}
-                        </div>
-                    ))
-                )}
-                {status === 'streaming' && (
-                    <div className="flex gap-1 p-2.5 rounded-xl bg-accent text-foreground mr-auto">
-                        <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-1.5 h-1.5 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
-                    </div>
+                    <>
+                        {messages.map((message) => (
+                            <div
+                                key={message.id}
+                                className={cn(
+                                    'p-2.5 rounded-xl text-xs font-mono border border-border/50',
+                                    message.role === 'user'
+                                        ? 'bg-primary text-primary-foreground ml-auto max-w-[80%] rounded-tr-none'
+                                        : 'bg-accent text-foreground mr-auto rounded-tl-none prose prose-sm dark:prose-invert max-w-none'
+                                )}
+                            >
+                                {message.role === 'assistant' ? (
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                        {message.parts.map(part => part.type === 'text' ? part.text : '').join('')}
+                                    </ReactMarkdown>
+                                ) : (
+                                    message.parts.map((part, index) => (
+                                        <span key={index}>
+                                            {part.type === 'text' ? part.text : null}
+                                        </span>
+                                    ))
+                                )}
+                            </div>
+                        ))}
+                        <div ref={messagesEndRef} />
+                    </>
                 )}
             </motion.div>
             
@@ -554,7 +568,7 @@ function ChatStep() {
                     placeholder="Type your message..."
                     disabled={status === 'streaming'}
                     className={cn(
-                        'flex-1 px-3 py-2 rounded-xl text-sm font-mono',
+                        'flex-1 px-3 min-w-10 h-10 rounded-xl text-sm font-mono transition-all',
                         'bg-muted/50 border border-border/50',
                         'focus:outline-none focus:border-primary/50',
                         'placeholder:text-muted-foreground',
@@ -566,13 +580,13 @@ function ChatStep() {
                     disabled={!input.trim() || status === 'streaming'}
                     whileTap={{ scale: 0.95 }}
                     className={cn(
-                        'p-2 rounded-xl',
-                        'bg-primary text-primary-foreground',
+                        'h-10 min-w-10 flex items-center justify-center rounded-xl',
+                        'bg-accent-foreground text-accent',
                         'disabled:opacity-50 disabled:cursor-not-allowed',
                         'transition-all'
                     )}
                 >
-                    <HugeiconsIcon icon={TelegramFreeIcons} size={18} />
+                    <HugeiconsIcon icon={ArrowRight02FreeIcons} size={18} />
                 </motion.button>
             </motion.form>
         </motion.div>

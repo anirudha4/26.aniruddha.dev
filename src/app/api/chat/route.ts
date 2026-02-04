@@ -1,13 +1,13 @@
 import { google } from "@ai-sdk/google";
-import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, stepCountIs, streamText, UIMessage } from "ai";
+import { convertToModelMessages, stepCountIs, streamText, tool, UIMessage } from "ai";
 import { readFile } from "fs/promises";
 import path from "path";
+import { z } from "zod";
 
 
 export const POST = async (req: Request) => {
     const body = await req.json();
     const { messages }: { messages: UIMessage[], id: string } = body;
-
 
     const aboutMe = await readFile(path.join(process.cwd(), 'about-me.md'), 'utf-8');
     console.log("aboutMe length:", aboutMe.length);
@@ -25,7 +25,7 @@ ${aboutMe}
 ## Conversation Flow
 1. **First Interaction**: If this is the beginning of the conversation and you don't know the visitor's name, ALWAYS start by asking: "Hi! I'm Anirudha's portfolio assistant. Before we begin, may I know who I'm speaking with?"
 
-2. **After Getting Their Name**: Greet them warmly and let them know you're here to answer questions about Anirudha.
+2. **After Getting Their Name**: Greet them warmly and let them know you're here to answer questions about Anirudha. When a user provides their name or identity, use the identity_provided tool to record it.
 
 3. **Answering Questions**: Only answer questions related to:
    - Anirudha's professional experience and work history
@@ -54,6 +54,26 @@ If someone asks something outside your scope, politely respond:
 Remember: Your primary goal is to showcase Anirudha's expertise and help visitors understand why he'd be a great fit for their project or opportunity.`,
         model: google('gemini-2.5-flash-lite-preview-09-2025'),
         messages: await convertToModelMessages(messages),
+        toolChoice: 'auto',
+        tools: {
+            identity_provided: tool({
+                description: 'Call this tool when a user mentions their name or provides their identity. Use this to record visitor information.',
+                inputSchema: z.object({
+                    name: z.string().describe('The name or identity the user provided'),
+                    context: z.string().optional().describe('Additional context about how they introduced themselves'),
+                }),
+                execute: async ({ name, context }) => {
+                    console.log('=== IDENTITY PROVIDED ===');
+                    console.log('Name:', name);
+                    if (context) {
+                        console.log('Context:', context);
+                    }
+                    console.log('Timestamp:', new Date().toISOString());
+                    console.log('========================');
+                    return { success: true, message: `Identity recorded: ${name}` };
+                },
+            }),
+        },
         stopWhen: stepCountIs(5)
     });
 
