@@ -13,6 +13,8 @@ import {
     AiChat02Icon,
     TelegramFreeIcons,
     ArrowRight02FreeIcons,
+    Linkedin,
+    Github,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { createContext, useContext, useState, useCallback, useMemo, useRef, useEffect } from 'react';
@@ -44,13 +46,13 @@ const MENU_STEPS: Record<string, MenuStep> = {
         parent: 'root',
         component: ThemeToggle,
     },
-    chat: {
-        id: 'chat',
-        label: 'Chat Assistant',
-        icon: AiChat02Icon,
-        parent: 'root',
-        component: ChatStep,
-    },
+    // chat: {
+    //     id: 'chat',
+    //     label: 'Chat Assistant',
+    //     icon: AiChat02Icon,
+    //     parent: 'root',
+    //     component: ChatStep,
+    // },
     contact: {
         id: 'contact',
         label: 'Contact',
@@ -206,19 +208,19 @@ export default function Menu() {
                         className="h-fit fixed bottom-0 p-3 max-w-md w-full left-1/2 z-50 -translate-x-1/2 outline-none"
                     >
                         <div
-                                className={cn(
-                                    "p-0.5 border bg-accent/50 rounded-4xl overflow-hidden",
-                                    "shadow-2xl shadow-accent-foreground/10 dark:shadow-none",
-                                    "backdrop-blur-xl"
-                                )}
+                            className={cn(
+                                "p-0.5 border bg-accent/50 rounded-4xl overflow-hidden",
+                                "shadow-2xl shadow-accent-foreground/10 dark:shadow-none",
+                                "backdrop-blur-xl"
+                            )}
+                        >
+                            <div
+                                className="bg-background rounded-[18px] border overflow-hidden"
                             >
-                                <div
-                                    className="bg-background rounded-[18px] border overflow-hidden"
-                                >
-                                    <DrawerHeader />
-                                    <DrawerContent />
-                                </div>
+                                <DrawerHeader />
+                                <DrawerContent />
                             </div>
+                        </div>
 
                         {/* Handle indicator */}
                         <motion.div
@@ -310,7 +312,7 @@ function DrawerContent() {
     const step = MENU_STEPS[currentStep];
 
     return (
-        <motion.div 
+        <motion.div
             className="px-3 pb-3 overflow-hidden"
             layout
             transition={{
@@ -417,12 +419,12 @@ function RootMenuStep() {
                 label="Appearance"
                 description="Theme & display"
             />
-            <MenuItem
+            {/* <MenuItem
                 stepId="chat"
                 icon={AiChat02Icon}
                 label="Chat Assistant"
                 description="Ask me anything"
-            />
+            /> */}
             <MenuItem
                 stepId="contact"
                 icon={Mail01Icon}
@@ -442,7 +444,10 @@ function RootMenuStep() {
 function ContactStep() {
     const links = [
         { icon: Mail01Icon, label: 'Email', value: 'aniruddha.gandhare@gmail.com', href: 'mailto:aniruddha.gandhare@gmail.com' },
-        { icon: Message01Icon, label: 'X', value: '@anirudhag1999', href: 'https://x.com/anirudhag1999' },
+        { icon: Message01Icon, label: 'X (Twitter)', value: '@anirudhag1999', href: 'https://x.com/anirudhag1999' },
+        { icon: Linkedin, label: 'LinkedIn', value: 'linkedin.com/in/anirudhagandhare', href: 'https://www.linkedin.com/in/anirudhagandhare/' },
+        { icon: Github, label: 'GitHub', value: 'github.com/anirudha4', href: 'https://github.com/anirudha4' },
+
     ];
 
     return (
@@ -505,7 +510,7 @@ function ChatStep() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!input.trim() || status === 'streaming') return;
-        
+
         const messageText = input;
         setInput('');
         await sendMessage({ text: messageText });
@@ -555,7 +560,7 @@ function ChatStep() {
                     </>
                 )}
             </motion.div>
-            
+
             <motion.form
                 variants={itemVariants}
                 onSubmit={handleSubmit}
@@ -606,7 +611,7 @@ function AboutStep() {
                 className="p-4 rounded-2xl bg-muted/50 border border-border/50"
             >
                 <p className="text-sm text-foreground font-mono leading-relaxed">
-                    I&apos;m Anirudha, a <span className="text-primary font-semibold">Founding Engineer</span> passionate about building products that matter.
+                    Hey! I&apos;m Anirudha, a <span className="text-primary font-semibold">Sr. Software Engineer @ Pendo</span> passionate about building products that matter.
                 </p>
             </motion.div>
             <motion.div
@@ -614,7 +619,7 @@ function AboutStep() {
                 className="flex gap-2"
             >
                 <div className="flex-1 p-3 rounded-xl bg-muted/30 border text-center">
-                    <span className="text-lg font-bold font-mono text-primary">4+</span>
+                    <span className="text-lg font-bold font-mono text-primary">5+</span>
                     <span className="text-xs text-muted-foreground font-mono block">Years Exp</span>
                 </div>
                 <div className="flex-1 p-3 rounded-xl bg-muted/30 border text-center">
