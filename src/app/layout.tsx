@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { BorderSettingsProvider } from "@/contexts/border-settings-context";
 import Menu from "@/components/product/menu/menu";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -68,6 +69,7 @@ export default function RootLayout({
             {children}
           </BorderSettingsProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
       <Analytics />
     </html>
