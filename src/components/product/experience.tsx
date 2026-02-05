@@ -117,9 +117,11 @@ export const ExperienceItem = ({
             href={link}
             target="_blank"
             className={cn(
-                "flex flex-col gap-2 group py-4 px-4 border-b",
+                "flex flex-col gap-2 group py-4 px-4",
                 !isLast && showBorders ? "border-b" : "border-transparent",
-                active ? 'bg-muted/20' : ''
+                !showBorders && 'rounded-2xl',
+                (!showBorders && active) && "border border-rose-50 dark:border-rose-900/10",
+                active ? "bg-linear-to-br from-rose-200/10 via-transparent to-rose-500/5" : ''
             )}
             initial={{ opacity: 0, filter: 'blur(4px)' }}
             animate={{ opacity: 1, filter: 'blur(0px)' }}
@@ -127,10 +129,16 @@ export const ExperienceItem = ({
         >
             <div className="flex flex-col gap-1">
                 <Image src={logo!} alt={title} width={40} height={40} className="mb-2" />
-                <h1 className="font-semibold text-accent-foreground/80 flex items-center gap-2 group-hover:text-primary font-mono text-[15px]">
+                <h1 className={cn(
+                    "font-semibold text-accent-foreground/80 flex items-center gap-2 group-hover:text-primary font-mono text-[15px]",
+                    active ? 'text-rose-500 group-hover:text-rose-400' : ''
+                )}>
                     {title} <HugeiconsIcon icon={ArrowUpRight03Icon} size={16} />
                 </h1>
-                <p className="text-sm text-muted-foreground group-hover:text-accent-foreground font-mono">
+                <p className={cn(
+                    "text-sm text-muted-foreground group-hover:text-accent-foreground font-mono",
+                    active ? 'text-accent-foreground' : ''
+                )}>
                     {description}
                 </p>
                 <div className="flex items-center justify-between gap-2 mt-3">
