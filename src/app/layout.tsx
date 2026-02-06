@@ -46,6 +46,28 @@ export const metadata: Metadata = {
     site: "@anirudhag1999",
     creator: "@anirudhag1999",
   },
+  alternates: {
+    canonical: "https://aniruddha.dev",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Anirudha Gandhare",
+  url: "https://aniruddha.dev",
+  image: "https://aniruddha.dev/og.jpg",
+  jobTitle: "Sr. Software Engineer",
+  worksFor: {
+    "@type": "Organization",
+    name: "Pendo",
+    url: "https://pendo.io",
+  },
+  sameAs: [
+    "https://www.linkedin.com/in/anirudhagandhare/",
+    "https://github.com/anirudha4",
+    "https://x.com/anirudhag1999",
+  ],
 };
 
 export default function RootLayout({
@@ -55,9 +77,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="google-site-verification" content="uzyTa_pgDdFdx-i-J0cdK1HuluguNRjg30Rdyd7dg7Y" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
