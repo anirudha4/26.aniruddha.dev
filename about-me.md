@@ -11,10 +11,16 @@ I'm Anirudha Gandhare, an Engineer, Designer, and Learner. I build things that w
 
 ## Professional Experience
 
-### Chisel Labs - Founding Engineer
-**Duration**: January 2022 - Present  
+### Pendo - Sr. Software Engineer
+**Duration**: February 2026 - Present  
+**Company**: Product Analytics Platform  
+**Description**: A product-analytics platform that helps software companies understand user behavior, improve user experience, and drive product adoption through in-app guidance and feedback collection.  
+**Website**: https://pendo.io/
+
+### Chisel Labs (Acquired by Pendo) - Founding Engineer
+**Duration**: January 2022 - February 2026  
 **Company**: B2B SaaS AI Product Management Platform  
-**Description**: AI Product Management Agent for PMs to double their speed and capacity.  
+**Description**: An AI-powered, unified product management platform designed to help product managers and teams create roadmaps, collect customer feedback, and align internal teams in one place.  
 **Website**: https://chisellabs.com/
 
 ### Wednesday Solution - Software Engineer
@@ -40,7 +46,8 @@ An AI powered Personal Assistant app which helps users from basic tasks to compl
 A task management app designed to help users organize their tasks efficiently with a clean and intuitive interface. Focused on simplicity and user experience.
 
 ## Professional Stats
-- **5+ years** of professional experience
+- **5+ years** of professional experience (2021 - Present)
 - **10+ projects** delivered
 - Passionate about building products that matter
-- Founding Engineer with startup experience
+- Founding Engineer with startup experience (Chisel Labs → acquired by Pendo)
+- Currently Sr. Software Engineer at Pendo

@@ -18,16 +18,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://aniruddha.dev"),
-  title: "Portfolio | Anirudha Gandhare",
-  description: "Portfolio website of Anirudha Gandhare",
+  title: "Anirudha Gandhare | Sr. Software Engineer at Pendo",
+  description: 'Sr. Software Engineer at Pendo. Previously Founding Engineer at Chisellabs (acquired by Pendo). Building product analytics platforms, AI-powered product management tools, and innovative digital solutions since 2021.',
   icons: {
     icon: '/logo.svg'
   },
+  keywords: ['Anirudha Gandhare', 'Software Engineer', 'Pendo', 'Chisellabs', 'Founding Engineer', 'Product Analytics', 'Full Stack Developer', 'Portfolio'],
   openGraph: {
-    title: "Portfolio | Anirudha Gandhare",
-    description: "Portfolio website of Anirudha Gandhare",
-    url: "https://aniruddha.dev/og.jpg",
-    siteName: "Portfolio of Anirudha Gandhare",
+    title: "Anirudha Gandhare | Sr. Software Engineer at Pendo",
+    description: "Sr. Software Engineer at Pendo. Previously Founding Engineer at Chisellabs (acquired by Pendo). Building product analytics platforms and AI-powered product management tools since 2021.",
+    url: "https://aniruddha.dev",
+    siteName: "Anirudha Gandhare - Portfolio",
     images: [
       {
         type: 'image/jpeg',
@@ -39,8 +40,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Portfolio | Anirudha Gandhare",
-    description: "Portfolio website of Anirudha Gandhare",
+    title: "Anirudha Gandhare | Sr. Software Engineer at Pendo",
+    description: "Sr. Software Engineer at Pendo. Previously Founding Engineer at Chisellabs (acquired by Pendo). Building product analytics platforms and AI-powered tools since 2021.",
     images: ["https://aniruddha.dev/og.jpg"],
     site: "@anirudhag1999",
     creator: "@anirudhag1999",

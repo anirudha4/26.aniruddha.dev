@@ -119,7 +119,7 @@ export const ExperienceItem = ({
             className={cn(
                 "flex flex-col gap-2 group py-4 px-4",
                 !isLast && showBorders ? "border-b" : "border-transparent",
-                !showBorders && 'rounded-2xl',
+                !showBorders && 'md:rounded-2xl',
                 (!showBorders && active) && "border border-rose-50 dark:border-rose-900/10",
                 active ? "bg-linear-to-br from-rose-200/10 via-transparent to-rose-500/5" : ''
             )}
