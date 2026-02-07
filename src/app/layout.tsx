@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     images: [
       {
         type: 'image/jpeg',
-        url: "https://aniruddha.dev/og.jpg",
+        url: "https://aniruddha.dev/OG_2.jpg",
         width: 1200,
         height: 630,
       },
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Anirudha Gandhare | Sr. Software Engineer at Pendo",
     description: "Sr. Software Engineer at Pendo. Previously Founding Engineer at Chisellabs (acquired by Pendo). Building product analytics platforms and AI-powered tools since 2021.",
-    images: ["https://aniruddha.dev/og.jpg"],
+    images: ["https://aniruddha.dev/OG_2.jpg"],
     site: "@anirudhag1999",
     creator: "@anirudhag1999",
   },
@@ -56,7 +56,7 @@ const jsonLd = {
   "@type": "Person",
   name: "Anirudha Gandhare",
   url: "https://aniruddha.dev",
-  image: "https://aniruddha.dev/og.jpg",
+  image: "https://aniruddha.dev/OG_2.jpg",
   jobTitle: "Sr. Software Engineer",
   worksFor: {
     "@type": "Organization",
