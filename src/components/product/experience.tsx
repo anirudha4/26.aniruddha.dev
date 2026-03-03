@@ -116,6 +116,16 @@ export const ExperienceItem = ({
         <motion.a
             href={link}
             target="_blank"
+            onClick={() => {
+                if (typeof window !== 'undefined' && (window as any).pendo) {
+                    (window as any).pendo.track("experience_item_clicked", {
+                        company_name: title,
+                        role: role || "unknown",
+                        is_active: String(active),
+                        link_url: link || "",
+                    });
+                }
+            }}
             className={cn(
                 "flex flex-col gap-2 group py-4 px-4",
                 !isLast && showBorders ? "border-b" : "border-transparent",

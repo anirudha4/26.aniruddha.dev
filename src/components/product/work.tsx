@@ -103,9 +103,22 @@ export const WorkItem = ({
     const { showBorders } = useBorderSettings();
     const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
+    const trackImageDismissed = (dismissMethod: string) => {
+        if (typeof window !== 'undefined' && (window as any).pendo && selectedImage !== null) {
+            (window as any).pendo.track("work_image_dismissed", {
+                project_title: title,
+                dismiss_method: dismissMethod,
+                image_index: selectedImage,
+            });
+        }
+    };
+
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') setSelectedImage(null);
+            if (e.key === 'Escape') {
+                trackImageDismissed("keyboard_escape");
+                setSelectedImage(null);
+            }
         };
         if (selectedImage !== null) {
             document.addEventListener('keydown', handleEscape);
@@ -152,7 +165,16 @@ export const WorkItem = ({
                         <div
                             key={index}
                             className="shrink-0 w-45 h-45 border p-1 bg-accent rounded-2xl cursor-pointer hover:opacity-90 transition-opacity"
-                            onClick={() => setSelectedImage(index)}
+                            onClick={() => {
+                                if (typeof window !== 'undefined' && (window as any).pendo) {
+                                    (window as any).pendo.track("work_image_expanded", {
+                                        project_title: title,
+                                        image_index: index,
+                                        image_src: src,
+                                    });
+                                }
+                                setSelectedImage(index);
+                            }}
                         >
                             <img 
                                 src={src} 
@@ -172,7 +194,10 @@ export const WorkItem = ({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        onClick={() => setSelectedImage(null)}
+                        onClick={() => {
+                            trackImageDismissed("backdrop_click");
+                            setSelectedImage(null);
+                        }}
                     >
                         <motion.div
                             className="relative max-w-full max-h-full"
@@ -188,7 +213,10 @@ export const WorkItem = ({
                                 className="max-w-[90vw] max-h-[90vh] object-contain rounded-2xl"
                             />
                             <button
-                                onClick={() => setSelectedImage(null)}
+                                onClick={() => {
+                                    trackImageDismissed("close_button");
+                                    setSelectedImage(null);
+                                }}
                                 className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm transition-colors"
                                 aria-label="Close modal"
                             >

@@ -51,6 +51,15 @@ const Hero = ({ }: Props) => {
                         href={link.href}
                         target="_blank"
                         onMouseEnter={() => setHoveredIndex(index)}
+                        onClick={() => {
+                            if (typeof window !== 'undefined' && (window as any).pendo) {
+                                (window as any).pendo.track("social_link_clicked", {
+                                    link_label: link.label,
+                                    link_href: link.href,
+                                    link_type: link.href.startsWith('mailto:') ? 'email' : 'social',
+                                });
+                            }
+                        }}
                     >
                         <motion.button
                             className={cn(
