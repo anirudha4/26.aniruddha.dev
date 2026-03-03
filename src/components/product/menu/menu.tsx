@@ -498,6 +498,8 @@ function ChatStep() {
     const [input, setInput] = useState('');
     const { messages, sendMessage, status } = useChat();
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const conversationIdRef = useRef(crypto.randomUUID());
+    const prevStatusRef = useRef(status);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -507,11 +509,50 @@ function ChatStep() {
         scrollToBottom();
     }, [messages]);
 
+    // Track agent responses when streaming completes
+    useEffect(() => {
+        if (prevStatusRef.current === 'streaming' && status !== 'streaming') {
+            const lastMessage = messages[messages.length - 1];
+            if (lastMessage && lastMessage.role === 'assistant') {
+                const content = lastMessage.parts
+                    .map(part => part.type === 'text' ? part.text : '')
+                    .join('');
+                const toolsUsed = lastMessage.parts
+                    .filter(part => part.type === 'tool-invocation')
+                    .map(part => (part as any).toolInvocation?.toolName)
+                    .filter(Boolean) as string[];
+
+                if (typeof window !== 'undefined' && window.pendo?.trackAgent) {
+                    window.pendo.trackAgent('agent_response', {
+                        agentId: 'OVGg9DmATr7Yrt25SBO4ZKtsk2g',
+                        conversationId: conversationIdRef.current,
+                        messageId: lastMessage.id,
+                        content: content,
+                        modelUsed: 'gemini-2.5-flash-lite-preview-09-2025',
+                        toolsUsed: toolsUsed,
+                    });
+                }
+            }
+        }
+        prevStatusRef.current = status;
+    }, [status, messages]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!input.trim() || status === 'streaming') return;
 
         const messageText = input;
+        const messageId = crypto.randomUUID();
+
+        if (typeof window !== 'undefined' && window.pendo?.trackAgent) {
+            window.pendo.trackAgent('prompt', {
+                agentId: 'OVGg9DmATr7Yrt25SBO4ZKtsk2g',
+                conversationId: conversationIdRef.current,
+                messageId: messageId,
+                content: messageText,
+            });
+        }
+
         setInput('');
         await sendMessage({ text: messageText });
     };
