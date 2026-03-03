@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { BorderSettingsProvider } from "@/contexts/border-settings-context";
 import Menu from "@/components/product/menu/menu";
+import PendoInitializer from "@/components/pendo-initializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -79,6 +80,19 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="google-site-verification" content="uzyTa_pgDdFdx-i-J0cdK1HuluguNRjg30Rdyd7dg7Y" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+(function(apiKey){
+    (function(p,e,n,d,o){var v,w,x,y,z;o=p[d]=p[d]||{};o._q=o._q||[];
+    v=['initialize','identify','updateOptions','pageLoad','track', 'trackAgent'];for(w=0,x=v.length;w<x;++w)(function(m){
+    o[m]=o[m]||function(){o._q[m===v[0]?'unshift':'push']([m].concat([].slice.call(arguments,0)));};})(v[w]);
+    y=e.createElement(n);y.async=!0;y.src='https://cdn.pendo.io/agent/static/'+apiKey+'/pendo.js';
+    z=e.getElementsByTagName(n)[0];z.parentNode.insertBefore(y,z);})(window,document,'script','pendo');
+})('fec414ed-3409-4d40-b61c-820b6c0c5b37');
+            `,
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -87,6 +101,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <PendoInitializer />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
