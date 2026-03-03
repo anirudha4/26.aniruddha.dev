@@ -17,7 +17,7 @@ import {
     Github,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { createContext, useContext, useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, useRef, useEffect, type RefObject } from 'react';
 import { Drawer } from 'vaul';
 import { ThemeToggle } from './theme-toggle';
 import { cn } from '@/lib/utils';
@@ -500,6 +500,7 @@ function ChatStep() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const conversationIdRef = useRef(crypto.randomUUID());
     const prevStatusRef = useRef(status);
+    const hasIdentifiedPendo = useRef(false);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -536,6 +537,34 @@ function ChatStep() {
         }
         prevStatusRef.current = status;
     }, [status, messages]);
+    useEffect(() => {
+        if (hasIdentifiedPendo.current) return;
+        for (const message of messages) {
+            for (const part of message.parts) {
+                if (
+                    part.type === 'tool-invocation' &&
+                    part.toolInvocation.toolName === 'identity_provided' &&
+                    part.toolInvocation.state === 'result'
+                ) {
+                    const { name, context } = part.toolInvocation.args as {
+                        name: string;
+                        context?: string;
+                    };
+                    const visitorId = localStorage.getItem('pendo_visitor_id') || 'anonymous';
+                    pendo.identify({
+                        visitor: {
+                            id: visitorId,
+                            full_name: name,
+                            visitorName: name,
+                            identityContext: context || undefined,
+                        },
+                    });
+                    hasIdentifiedPendo.current = true;
+                    return;
+                }
+            }
+        }
+    }, [messages]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
