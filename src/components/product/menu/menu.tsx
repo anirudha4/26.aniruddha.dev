@@ -498,6 +498,8 @@ function ChatStep() {
     const [input, setInput] = useState('');
     const { messages, sendMessage, status } = useChat();
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const conversationIdRef = useRef(crypto.randomUUID());
+    const prevStatusRef = useRef(status);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -507,11 +509,42 @@ function ChatStep() {
         scrollToBottom();
     }, [messages]);
 
+    // Track agent_response when streaming completes
+    useEffect(() => {
+        if (prevStatusRef.current === 'streaming' && status === 'ready') {
+            const lastMessage = messages[messages.length - 1];
+            if (lastMessage && lastMessage.role === 'assistant') {
+                const content = lastMessage.parts
+                    .map(part => part.type === 'text' ? part.text : '')
+                    .join('');
+                window.pendo?.trackAgent("agent_response", {
+                    agentId: "VbjKGERgc9VXMGTpNBKTRYiyoxo",
+                    conversationId: conversationIdRef.current,
+                    messageId: lastMessage.id,
+                    content: content,
+                    modelUsed: "gemini-2.5-flash-lite-preview-09-2025",
+                });
+            }
+        }
+        prevStatusRef.current = status;
+    }, [status, messages]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!input.trim() || status === 'streaming') return;
 
         const messageText = input;
+        const promptMessageId = crypto.randomUUID();
+
+        window.pendo?.trackAgent("prompt", {
+            agentId: "VbjKGERgc9VXMGTpNBKTRYiyoxo",
+            conversationId: conversationIdRef.current,
+            messageId: promptMessageId,
+            content: messageText,
+            suggestedPrompt: false,
+            fileUploaded: false,
+        });
+
         setInput('');
         await sendMessage({ text: messageText });
     };
