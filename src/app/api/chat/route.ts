@@ -4,10 +4,47 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { z } from "zod";
 
+const PENDO_TRACK_URL = "https://data.pendo-dev.pendo-dev.com/data/track";
+const PENDO_INTEGRATION_KEY = "d7740d17-2a59-4556-9032-7f7534568fac";
+
+async function pendoTrackServerEvent(
+    event: string,
+    properties: Record<string, unknown>,
+    context?: { ip?: string; userAgent?: string; url?: string }
+) {
+    try {
+        await fetch(PENDO_TRACK_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-pendo-integration-key": PENDO_INTEGRATION_KEY,
+            },
+            body: JSON.stringify({
+                type: "track",
+                event,
+                visitorId: "system",
+                accountId: "system",
+                timestamp: Date.now(),
+                properties,
+                context,
+            }),
+        });
+    } catch (err) {
+        console.error("Pendo server-side track error:", err);
+    }
+}
 
 export const POST = async (req: Request) => {
     const body = await req.json();
     const { messages }: { messages: UIMessage[], id: string } = body;
+
+    pendoTrackServerEvent("chat_api_called", {
+        message_count: messages.length,
+        model_name: "gemini-2.5-flash-lite-preview-09-2025",
+    }, {
+        userAgent: req.headers.get("user-agent") || undefined,
+        url: req.url,
+    });
 
     const aboutMe = await readFile(path.join(process.cwd(), 'about-me.md'), 'utf-8');
     console.log("aboutMe length:", aboutMe.length);
@@ -70,6 +107,13 @@ Remember: Your primary goal is to showcase Anirudha's expertise and help visitor
                     }
                     console.log('Timestamp:', new Date().toISOString());
                     console.log('========================');
+
+                    await pendoTrackServerEvent("chat_visitor_identity_provided", {
+                        visitor_name: name,
+                        context: context || "",
+                        timestamp: new Date().toISOString(),
+                    });
+
                     return { success: true, message: `Identity recorded: ${name}` };
                 },
             }),

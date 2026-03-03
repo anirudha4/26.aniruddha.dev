@@ -64,7 +64,15 @@ const ThemeOption = ({ id, label, icon }: ThemeOptionProps) => {
 
     return (
         <motion.button
-            onClick={() => setTheme(id)}
+            onClick={() => {
+                if (typeof window !== 'undefined' && (window as any).pendo) {
+                    (window as any).pendo.track("theme_changed", {
+                        new_theme: id,
+                        previous_theme: theme || "unknown",
+                    });
+                }
+                setTheme(id);
+            }}
             className={cn(
                 'flex flex-col items-center cursor-pointer relative justify-center gap-1 h-full flex-1 rounded-[10px]',
                 'transition-colors',

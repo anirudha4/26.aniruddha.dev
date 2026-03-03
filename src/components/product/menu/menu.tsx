@@ -129,6 +129,14 @@ export default function Menu() {
     const [direction, setDirection] = useState<'forward' | 'back'>('forward');
 
     const navigate = useCallback((stepId: string) => {
+        if (typeof window !== 'undefined' && (window as any).pendo) {
+            const step = MENU_STEPS[stepId];
+            (window as any).pendo.track("menu_section_navigated", {
+                section_id: stepId,
+                section_label: step?.label || stepId,
+                previous_step: currentStep,
+            });
+        }
         setDirection('forward');
         setPreviousStep(currentStep);
         setCurrentStep(stepId);
@@ -150,7 +158,20 @@ export default function Menu() {
     // Reset to root when drawer closes
     const handleOpenChange = useCallback((open: boolean) => {
         setIsOpen(open);
+        if (open) {
+            if (typeof window !== 'undefined' && (window as any).pendo) {
+                (window as any).pendo.track("menu_opened", {
+                    source_page: window.location.pathname,
+                });
+            }
+        }
         if (!open) {
+            if (typeof window !== 'undefined' && (window as any).pendo) {
+                (window as any).pendo.track("menu_closed", {
+                    last_step_visited: currentStep,
+                    close_method: "swipe_or_overlay",
+                });
+            }
             // Small delay to let close animation finish
             setTimeout(() => {
                 setCurrentStep('root');
@@ -158,7 +179,7 @@ export default function Menu() {
                 setDirection('forward');
             }, 200);
         }
-    }, []);
+    }, [currentStep]);
 
     const contextValue = useMemo(() => ({
         currentStep,
@@ -287,7 +308,15 @@ function DrawerHeader() {
             </div>
 
             <motion.button
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                    if (typeof window !== 'undefined' && (window as any).pendo) {
+                        (window as any).pendo.track("menu_closed", {
+                            last_step_visited: currentStep,
+                            close_method: "close_button",
+                        });
+                    }
+                    setIsOpen(false);
+                }}
                 className={cn(
                     'rounded-xl p-1.5 cursor-pointer',
                     'bg-accent/50 hover:bg-accent border border-transparent hover:border-border',
@@ -469,6 +498,15 @@ function ContactStep() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => {
+                        if (typeof window !== 'undefined' && (window as any).pendo) {
+                            (window as any).pendo.track("contact_link_clicked", {
+                                link_label: link.label,
+                                link_href: link.href,
+                                link_type: link.href.startsWith('mailto:') ? 'email' : 'social',
+                            });
+                        }
+                    }}
                     variants={itemVariants}
                     className={cn(
                         'flex items-center gap-3 p-3 rounded-2xl',
@@ -534,6 +572,13 @@ function ChatStep() {
         if (!input.trim() || status === 'streaming') return;
 
         const messageText = input;
+        if (typeof window !== 'undefined' && (window as any).pendo) {
+            (window as any).pendo.track("chat_message_sent", {
+                message_length: messageText.length,
+                conversation_turn_number: messages.length + 1,
+                chat_status: status,
+            });
+        }
         const promptMessageId = crypto.randomUUID();
 
         window.pendo?.trackAgent("prompt", {
