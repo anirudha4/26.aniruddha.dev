@@ -512,7 +512,16 @@ function ChatStep() {
         if (!input.trim() || status === 'streaming') return;
 
         const messageText = input;
+        const userMessageCount = messages.filter(m => m.role === 'user').length;
         setInput('');
+
+        pendo.track("chat_message_sent", {
+            message_length: messageText.length,
+            message_count_in_session: userMessageCount + 1,
+            is_first_message: userMessageCount === 0,
+            chat_status: status,
+        });
+
         await sendMessage({ text: messageText });
     };
 

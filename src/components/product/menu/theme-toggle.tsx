@@ -64,7 +64,15 @@ const ThemeOption = ({ id, label, icon }: ThemeOptionProps) => {
 
     return (
         <motion.button
-            onClick={() => setTheme(id)}
+            onClick={() => {
+                if (theme !== id) {
+                    pendo.track("theme_preference_changed", {
+                        theme_selected: id,
+                        previous_theme: theme || 'unknown',
+                    });
+                }
+                setTheme(id);
+            }}
             className={cn(
                 'flex flex-col items-center cursor-pointer relative justify-center gap-1 h-full flex-1 rounded-[10px]',
                 'transition-colors',

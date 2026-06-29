@@ -70,6 +70,31 @@ Remember: Your primary goal is to showcase Anirudha's expertise and help visitor
                     }
                     console.log('Timestamp:', new Date().toISOString());
                     console.log('========================');
+
+                    try {
+                        await fetch('https://data.pendo-dev.pendo-dev.com/data/track', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-pendo-integration-key': '38c392bd-b47d-4bf7-911e-bd5e9cc5958d',
+                            },
+                            body: JSON.stringify({
+                                type: 'track',
+                                event: 'visitor_identity_provided',
+                                visitorId: 'anonymous',
+                                accountId: 'system',
+                                timestamp: Date.now(),
+                                properties: {
+                                    visitor_name: name,
+                                    visitor_context: context || '',
+                                    message_count_before_identity: messages.length,
+                                },
+                            }),
+                        });
+                    } catch (e) {
+                        console.error('Failed to track visitor_identity_provided:', e);
+                    }
+
                     return { success: true, message: `Identity recorded: ${name}` };
                 },
             }),
