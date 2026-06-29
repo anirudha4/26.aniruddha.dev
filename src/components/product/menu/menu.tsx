@@ -496,7 +496,24 @@ function ContactStep() {
 
 function ChatStep() {
     const [input, setInput] = useState('');
-    const { messages, sendMessage, status } = useChat();
+    const { messages, sendMessage, status, id: conversationId } = useChat({
+        onFinish({ message }) {
+            const content = message.parts
+                .map(part => part.type === 'text' ? part.text : '')
+                .join('');
+            const toolsUsed = message.parts
+                .filter(part => part.type === 'dynamic-tool' || part.type.startsWith('tool-'))
+                .map(part => 'toolName' in part ? (part as { toolName: string }).toolName : part.type.replace('tool-', ''));
+            pendo.trackAgent("agent_response", {
+                agentId: "JJwY2Nacq6NUY0cOWidXS6gjNbU",
+                conversationId,
+                messageId: message.id,
+                content,
+                modelUsed: "gemini-2.5-flash-lite-preview-09-2025",
+                toolsUsed,
+            });
+        },
+    });
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -513,6 +530,14 @@ function ChatStep() {
 
         const messageText = input;
         setInput('');
+
+        pendo.trackAgent("prompt", {
+            agentId: "JJwY2Nacq6NUY0cOWidXS6gjNbU",
+            conversationId,
+            messageId: crypto.randomUUID(),
+            content: messageText,
+        });
+
         await sendMessage({ text: messageText });
     };
 
