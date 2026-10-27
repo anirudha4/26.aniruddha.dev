@@ -498,6 +498,9 @@ function ChatStep() {
     const [input, setInput] = useState('');
     const { messages, sendMessage, status } = useChat();
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const conversationIdRef = useRef(crypto.randomUUID());
+    const prevStatusRef = useRef(status);
+    const lastTrackedResponseIdRef = useRef<string | null>(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -507,12 +510,66 @@ function ChatStep() {
         scrollToBottom();
     }, [messages]);
 
+    // Track agent responses when streaming completes
+    useEffect(() => {
+        if (
+            prevStatusRef.current === 'streaming' &&
+            status === 'ready' &&
+            messages.length > 0
+        ) {
+            const lastMessage = messages[messages.length - 1];
+            if (
+                lastMessage.role === 'assistant' &&
+                lastMessage.id !== lastTrackedResponseIdRef.current
+            ) {
+                lastTrackedResponseIdRef.current = lastMessage.id;
+                const content = lastMessage.parts
+                    .map((part) => (part.type === 'text' ? part.text : ''))
+                    .join('');
+                const toolsUsed = lastMessage.parts
+                    .filter((part) => 'toolName' in part)
+                    .map(
+                        (part) =>
+                            (part as unknown as { toolName: string }).toolName
+                    );
+                if (
+                    typeof pendo !== 'undefined' &&
+                    typeof pendo.trackAgent === 'function'
+                ) {
+                    pendo.trackAgent('agent_response', {
+                        agentId: 'ebGhgquk3ugNoG81KbfSIE__lS8',
+                        conversationId: conversationIdRef.current,
+                        messageId: lastMessage.id,
+                        content,
+                        modelUsed: 'gemini-2.5-flash-lite-preview-09-2025',
+                        toolsUsed,
+                    });
+                }
+            }
+        }
+        prevStatusRef.current = status;
+    }, [status, messages]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!input.trim() || status === 'streaming') return;
 
         const messageText = input;
         setInput('');
+
+        if (
+            typeof pendo !== 'undefined' &&
+            typeof pendo.trackAgent === 'function'
+        ) {
+            pendo.trackAgent('prompt', {
+                agentId: 'ebGhgquk3ugNoG81KbfSIE__lS8',
+                conversationId: conversationIdRef.current,
+                messageId: crypto.randomUUID(),
+                content: messageText,
+                suggestedPrompt: false,
+            });
+        }
+
         await sendMessage({ text: messageText });
     };
 
